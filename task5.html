@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бургерное меню</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2575fc;
+        }
+
+        .nav-desktop {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-desktop a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-desktop a:hover {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+
+        .burger-menu span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        .nav-mobile {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 80px 30px 30px;
+            transition: right 0.4s ease;
+            z-index: 100;
+        }
+
+        .nav-mobile.active {
+            right: 0;
+        }
+
+        .nav-mobile a {
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            transition: color 0.3s ease;
+        }
+
+        .nav-mobile a:hover {
+            color: #2575fc;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .content {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2575fc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #6a11cb;
+            margin: 25px 0 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2575fc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+            overflow-x: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature i {
+            font-size: 40px;
+            color: #2575fc;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-desktop {
+                display: none;
+            }
+
+            .burger-menu {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Меню</div>
+            <nav class="nav-desktop">
+                <a href="#">Главная</a>
+                <a href="#">О нас</a>
+                <a href="#">Услуги</a>
+                <a href="#">Портфолио</a>
+                <a href="#">Контакты</a>
+            </nav>
+            <div class="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <nav class="nav-mobile">
+            <button class="close-menu">&times;</button>
+            <a href="#">Главная</a>
+            <a href="#">О нас</a>
+            <a href="#">Услуги</a>
+            <a href="#">Портфолио</a>
+            <a href="#">Контакты</a>
+        </nav>
+
+        <div class="overlay"></div>
+
+        <div class="content">
+            <h1>Бургерное меню с JavaScript</h1>
+            
+            <p>Это пример реализации адаптивного бургерного меню с использованием HTML, CSS и JavaScript. Меню автоматически переключается между десктопной и мобильной версией при изменении размера экрана.</p>
+            
+            <h2>Как это работает</h2>
+            
+            <p>При ширине экрана менее 768px навигационное меню скрывается и появляется кнопка-бургер. При клике на бургер-кнопку появляется выдвижное меню с анимацией.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <i>📱</i>
+                    <h3>Адаптивность</h3>
+                    <p>Автоматически адаптируется под разные размеры экранов</p>
+                </div>
+                <div class="feature">
+                    <i>⚡</i>
+                    <h3>Быстрая работа</h3>
+                    <p>Плавные анимации и быстрое переключение состояний</p>
+                </div>
+                <div class="feature">
+                    <i>🎨</i>
+                    <h3>Современный дизайн</h3>
+                    <p>Чистый и современный внешний вид</p>
+                </div>
+            </div>
+            
+            <h2>Код JavaScript</h2>
+            
+            <div class="code-block">
+// Получаем элементы DOM
+const burgerMenu = document.querySelector('.burger-menu');
+const navMobile = document.querySelector('.nav-mobile');
+const overlay = document.querySelector('.overlay');
+const closeMenu = document.querySelector('.close-menu');
+
+// Функция для открытия/закрытия меню
+function toggleMenu() {
+    burgerMenu.classList.toggle('active');
+    navMobile.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// События клика
+burgerMenu.addEventListener('click', toggleMenu);
+closeMenu.addEventListener('click', toggleMenu);
+overlay.addEventListener('click', toggleMenu);
+            </div>
+            
+            <h2>Преимущества</h2>
+            
+            <p>Бургерное меню стало стандартом для мобильной навигации благодаря своим преимуществам:</p>
+            
+            <ul>
+                <li>Экономит место на маленьких экранах</li>
+                <li>Интуитивно понятно для пользователей</li>
+                <li>Позволяет сосредоточить внимание на контенте</li>
+                <li>Легко реализуется с помощью CSS и JavaScript</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Бургерное меню с JavaScript &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Получаем элементы DOM
+        const burgerMenu = document.querySelector('.burger-menu');
+        const navMobile = document.querySelector('.nav-mobile');
+        const overlay = document.querySelector('.overlay');
+        const closeMenu = document.querySelector('.close-menu');
+
+        // Функция для открытия/закрытия меню
+        function toggleMenu() {
+            burgerMenu.classList.toggle('active');
+            navMobile.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            // Блокировка прокрутки body при открытом меню
+            document.body.style.overflow = navMobile.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // События клика
+        burgerMenu.addEventListener('click', toggleMenu);
+        closeMenu.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Закрытие меню при клике на ссылку
+        const navLinks = document.querySelectorAll('.nav-mobile a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+        // Закрытие меню при изменении размера окна (если перешли на десктопную версию)
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                burgerMenu.classList.remove('active');
+                navMobile.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>
